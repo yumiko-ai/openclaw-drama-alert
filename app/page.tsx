@@ -7,11 +7,11 @@ import Link from "next/link";
 const TOOLS = [
   { 
     label: "Tweet Media Generator", 
-    href: "http://100.88.15.95:5050", 
+    href: "/generator", 
     icon: FileImage, 
     color: "from-red-500 to-red-700",
     description: "Create stunning thumbnails for your tweets",
-    external: true
+    external: false
   },
   { 
     label: "Discovery", 
