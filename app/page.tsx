@@ -1,53 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { Sparkles, ExternalLink, Download, Calendar, Zap, MessageSquare } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ExternalLink, TrendingUp, TrendingDown, Minus, Twitter, Heart, MessageCircle, Repeat, Share, Eye, Users, Activity, Image, MessageSquare, Sparkles } from "lucide-react";
 import Link from "next/link";
-import NewsTicker from "@/components/NewsTicker";
-import CompetitorAnalysis from "@/components/CompetitorAnalysis";
-import Analytics from "@/components/Analytics";
-import FollowerTracker from "@/components/FollowerTracker";
-import DocketTopics from "@/components/DocketTopics";
+import TwitterDashboard from "@/components/TwitterDashboard";
 
-type Tab = "home" | "competitors" | "analytics" | "docket";
-
-const QUICK_ACTIONS = [
-  { 
-    label: "Generate New", 
-    href: "/generator", 
-    icon: Sparkles, 
-    color: "from-red-500 to-red-700",
-    description: "Create a new DramaAlert thumbnail"
-  },
-  { 
-    label: "AI Chat", 
-    href: "/chat", 
-    icon: MessageSquare, 
-    color: "from-purple-500 to-purple-700",
-    description: "Get ideas from AI assistant"
-  },
-  { 
-    label: "Open Generator", 
-    href: "http://100.88.15.95:5050", 
-    icon: ExternalLink, 
-    color: "from-blue-500 to-blue-700",
-    description: "Full web interface",
-    external: true
-  },
-];
+type Tab = "twitter" | "generator" | "chat";
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<Tab>("home");
+  const [activeTab, setActiveTab] = useState<Tab>("twitter");
 
   return (
     <div className="max-w-7xl mx-auto">
       {/* Navigation Tabs */}
       <div className="flex items-center gap-2 mb-6">
         {[
-          { id: "home", label: "Home", icon: Zap },
-          { id: "competitors", label: "Competitors", icon: Sparkles },
-          { id: "analytics", label: "Analytics", icon: Calendar },
-          { id: "docket", label: "Docket", icon: MessageSquare },
+          { id: "twitter", label: "Twitter/X", icon: Twitter },
+          { id: "generator", label: "Generator", icon: Image },
+          { id: "chat", label: "AI Chat", icon: MessageSquare },
         ].map((tab) => {
           const Icon = tab.icon;
           return (
@@ -55,7 +25,7 @@ export default function HomePage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as Tab)}
               className={`drama-button flex items-center gap-2 ${
-                activeTab === tab.id ? "bg-red-600" : ""
+                activeTab === tab.id ? "bg-blue-600" : ""
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -65,81 +35,65 @@ export default function HomePage() {
         })}
       </div>
 
-      {/* News Ticker */}
-      <NewsTicker />
-
       {/* Tab Content */}
-      {activeTab === "home" && (
-        <div className="space-y-8">
-          {/* Header */}
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="live-dot"></div>
-              <span className="text-red-400 text-sm font-semibold">DRAMAALERT STUDIO</span>
+      {activeTab === "twitter" && <TwitterDashboard />}
+      
+      {activeTab === "generator" && (
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-4xl font-bold drama-title">Thumbnail Generator</h1>
+              <p className="text-white/60">Create professional DramaAlert-style thumbnails</p>
             </div>
-            <h1 className="text-5xl font-bold mb-2">Create Impactful Thumbnails</h1>
-            <p className="text-white/60 text-lg">Professional DramaAlert-style thumbnails with AI assistance</p>
+            <a
+              href="http://100.88.15.95:5050"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="drama-button flex items-center gap-2"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Open Web Generator
+            </a>
           </div>
-
-          {/* Quick Actions */}
-          <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {QUICK_ACTIONS.map((action) => {
-              const Icon = action.icon;
-              return (
-                <Link
-                  key={action.label}
-                  href={action.href}
-                  target={action.external ? "_blank" : "_self"}
-                  className="drama-card p-6 group"
-                >
-                  <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${action.color} mb-4`}>
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-1 group-hover:text-red-300 transition-colors">
-                    {action.label}
-                  </h3>
-                  <p className="text-white/60 text-sm">{action.description}</p>
-                </Link>
-              );
-            })}
-          </section>
-
-          {/* Follower Tracker */}
-          <section>
-            <FollowerTracker />
-          </section>
-
-          {/* Stats Grid */}
-          <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="drama-card p-4 text-center">
-              <div className="text-3xl font-bold text-red-500">2.1M</div>
-              <div className="text-white/60 text-sm">Followers</div>
-            </div>
-            <div className="drama-card p-4 text-center">
-              <div className="text-3xl font-bold text-green-500">+3.2%</div>
-              <div className="text-white/60 text-sm">Growth</div>
-            </div>
-            <div className="drama-card p-4 text-center">
-              <div className="text-3xl font-bold text-purple-500">1.4M</div>
-              <div className="text-white/60 text-sm">Weekly Views</div>
-            </div>
-            <div className="drama-card p-4 text-center">
-              <div className="text-3xl font-bold text-blue-500">9.8%</div>
-              <div className="text-white/60 text-sm">Engagement</div>
-            </div>
-          </section>
+          {/* Generator content would go here - using link to full generator for now */}
+          <div className="drama-card p-12 text-center">
+            <Sparkles className="w-16 h-16 mx-auto mb-4 text-red-500" />
+            <h2 className="text-2xl font-bold mb-2">Full Generator</h2>
+            <p className="text-white/60 mb-4">Open the full thumbnail generator with all features</p>
+            <a
+              href="http://100.88.15.95:5050"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="drama-button inline-flex items-center gap-2"
+            >
+              Open Generator
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
         </div>
       )}
 
-      {activeTab === "competitors" && <CompetitorAnalysis />}
-
-      {activeTab === "analytics" && <Analytics />}
-
-      {activeTab === "docket" && <DocketTopics />}
+      {activeTab === "chat" && (
+        <div className="max-w-5xl mx-auto h-[calc(100vh-140px)] flex flex-col">
+          <div className="drama-card p-4 mb-4">
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-purple-500" />
+              AI Chat Assistant
+            </h2>
+            <p className="text-white/60 text-sm">Get thumbnail ideas and content suggestions</p>
+          </div>
+          {/* Chat content - redirecting for now */}
+          <div className="drama-card p-12 text-center flex-1 flex flex-col items-center justify-center">
+            <MessageSquare className="w-16 h-16 mx-auto mb-4 text-purple-500" />
+            <h2 className="text-2xl font-bold mb-2">AI Chat</h2>
+            <p className="text-white/60">Chat with AI for thumbnail ideas and content suggestions</p>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="mt-12 pt-6 border-t border-white/10 text-center text-white/40 text-sm">
-        <p>DramaAlert Studio • Connected to live feeds • Last updated: {new Date().toLocaleTimeString()}</p>
+        <p>DramaAlert Studio • @DramaAlert Twitter Dashboard • {new Date().toLocaleDateString()}</p>
       </footer>
     </div>
   );
