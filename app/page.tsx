@@ -1,99 +1,123 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ExternalLink, TrendingUp, TrendingDown, Minus, Twitter, Heart, MessageCircle, Repeat, Share, Eye, Users, Activity, Image, MessageSquare, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { ExternalLink, Layers, FileImage, Sparkles, Search, Rss, Twitter, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import TwitterDashboard from "@/components/TwitterDashboard";
 
-type Tab = "twitter" | "generator" | "chat";
+const TOOLS = [
+  { 
+    label: "Tweet Media Generator", 
+    href: "http://100.88.15.95:5050", 
+    icon: FileImage, 
+    color: "from-red-500 to-red-700",
+    description: "Create stunning thumbnails for your tweets",
+    external: true
+  },
+  { 
+    label: "Discovery", 
+    href: "/dashboard", 
+    icon: Sparkles, 
+    color: "from-purple-500 to-purple-700",
+    description: "AI-powered tweet creation & content ideas",
+  },
+  { 
+    label: "Competitors", 
+    href: "/dashboard", 
+    icon: Search, 
+    color: "from-blue-500 to-blue-700",
+    description: "Track viral tweets from competitors",
+  },
+  { 
+    label: "Feeds", 
+    href: "/dashboard", 
+    icon: Rss, 
+    color: "from-green-500 to-green-700",
+    description: "Live RSS & Twitter account monitoring",
+  },
+];
 
-export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<Tab>("twitter");
+const FEATURES = [
+  { title: "Real-time Alerts", desc: "Monitor breaking news across streaming", icon: "🚨" },
+  { title: "Competitor Tracking", desc: "See what rivals are posting", icon: "👀" },
+  { title: "Auto-Generation", desc: "AI creates content for you", icon: "🤖" },
+  { title: "Live Feeds", desc: "RSS & Twitter in one place", icon: "📡" },
+];
 
+export default function LandingPage() {
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 mb-6">
-        {[
-          { id: "twitter", label: "Twitter/X", icon: Twitter },
-          { id: "generator", label: "Generator", icon: Image },
-          { id: "chat", label: "AI Chat", icon: MessageSquare },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as Tab)}
-              className={`drama-button flex items-center gap-2 ${
-                activeTab === tab.id ? "bg-blue-600" : ""
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {tab.label}
-            </button>
-          );
-        })}
+    <div className="min-h-screen">
+      {/* Hero */}
+      <div className="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center">
+        <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-500/30 rounded-full px-4 py-2 mb-6">
+          <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+          <span className="text-red-400 text-sm font-semibold">DRAMAALERT STUDIO</span>
+        </div>
+        
+        <h1 className="text-6xl font-bold mb-4">
+          All Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-purple-500">Drama Alert</span> Tools
+        </h1>
+        <p className="text-xl text-white/60 mb-8 max-w-2xl mx-auto">
+          Create viral thumbnails, track competitors, monitor feeds, and generate AI content — all in one dashboard.
+        </p>
+
+        <Link 
+          href="/dashboard"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-purple-600 px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity"
+        >
+          Open Dashboard
+          <ArrowRight className="w-5 h-5" />
+        </Link>
       </div>
 
-      {/* Tab Content */}
-      {activeTab === "twitter" && <TwitterDashboard />}
-      
-      {activeTab === "generator" && (
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-4xl font-bold drama-title">Thumbnail Generator</h1>
-              <p className="text-white/60">Create professional DramaAlert-style thumbnails</p>
-            </div>
-            <a
-              href="http://100.88.15.95:5050"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="drama-button flex items-center gap-2"
-            >
-              <ExternalLink className="w-4 h-4" />
-              Open Web Generator
-            </a>
-          </div>
-          {/* Generator content would go here - using link to full generator for now */}
-          <div className="drama-card p-12 text-center">
-            <Sparkles className="w-16 h-16 mx-auto mb-4 text-red-500" />
-            <h2 className="text-2xl font-bold mb-2">Full Generator</h2>
-            <p className="text-white/60 mb-4">Open the full thumbnail generator with all features</p>
-            <a
-              href="http://100.88.15.95:5050"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="drama-button inline-flex items-center gap-2"
-            >
-              Open Generator
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </div>
+      {/* Tools Grid */}
+      <div className="max-w-6xl mx-auto px-6 pb-16">
+        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+          <Layers className="w-6 h-6 text-white/60" />
+          Tools
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {TOOLS.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <a
+                key={tool.label}
+                href={tool.href}
+                target={tool.external ? "_blank" : "_self"}
+                className="drama-card p-6 group hover:bg-white/10 transition-all"
+              >
+                <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${tool.color} mb-4`}>
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 group-hover:text-red-300 transition-colors">
+                  {tool.label}
+                </h3>
+                <p className="text-white/60 text-sm">{tool.description}</p>
+                {tool.external && (
+                  <ExternalLink className="w-4 h-4 text-white/40 mt-3" />
+                )}
+              </a>
+            );
+          })}
         </div>
-      )}
+      </div>
 
-      {activeTab === "chat" && (
-        <div className="max-w-5xl mx-auto h-[calc(100vh-140px)] flex flex-col">
-          <div className="drama-card p-4 mb-4">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-500" />
-              AI Chat Assistant
-            </h2>
-            <p className="text-white/60 text-sm">Get thumbnail ideas and content suggestions</p>
-          </div>
-          {/* Chat content - redirecting for now */}
-          <div className="drama-card p-12 text-center flex-1 flex flex-col items-center justify-center">
-            <MessageSquare className="w-16 h-16 mx-auto mb-4 text-purple-500" />
-            <h2 className="text-2xl font-bold mb-2">AI Chat</h2>
-            <p className="text-white/60">Chat with AI for thumbnail ideas and content suggestions</p>
-          </div>
+      {/* Features */}
+      <div className="max-w-6xl mx-auto px-6 pb-16">
+        <h2 className="text-2xl font-bold mb-6">Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {FEATURES.map((feature) => (
+            <div key={feature.title} className="drama-card p-6 text-center">
+              <div className="text-4xl mb-3">{feature.icon}</div>
+              <h3 className="font-semibold mb-1">{feature.title}</h3>
+              <p className="text-white/60 text-sm">{feature.desc}</p>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* Footer */}
-      <footer className="mt-12 pt-6 border-t border-white/10 text-center text-white/40 text-sm">
-        <p>DramaAlert Studio • @DramaAlert Twitter Dashboard • {new Date().toLocaleDateString()}</p>
+      <footer className="border-t border-white/10 py-8 text-center text-white/40 text-sm">
+        <p>DramaAlert Studio • {new Date().toLocaleDateString()}</p>
       </footer>
     </div>
   );
