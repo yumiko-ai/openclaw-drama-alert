@@ -25,7 +25,22 @@ export function errorResponse(error: string, statusCode = 400): APIResponse {
 export async function authenticateRequest(
   request: Request
 ): Promise<{ user: TokenPayload | null; error: string | null }> {
-  const authHeader = request.headers.get('Authorization');
+  // Check Authorization header first
+  let authHeader = request.headers.get('Authorization');
+  
+  // Fallback to cookie if no header
+  if (!authHeader) {
+    const cookieHeader = request.headers.get('Cookie');
+    if (cookieHeader) {
+      const cookies = Object.fromEntries(
+        cookieHeader.split(';').map(c => {
+          const [key, ...val] = c.trim().split('=');
+          return [key, val.join('=')];
+        })
+      );
+      authHeader = `Bearer ${cookies['auth-token']}`;
+    }
+  }
   
   if (!authHeader) {
     return { user: null, error: 'Missing Authorization header' };
