@@ -8,7 +8,9 @@ import {
   Bell,
   TrendingUp,
   MessageSquare,
+  AlertTriangle,
 } from "lucide-react";
+import ViralQueue from "./ViralQueue";
 
 interface DashboardStats {
   generationsToday: number;
@@ -136,6 +138,11 @@ export default function DashboardClient() {
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Viral Tweet Monitor */}
+        <div className="mt-8">
+          <ViralQueue />
         </div>
       </main>
     </div>
