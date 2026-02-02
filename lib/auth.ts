@@ -1,9 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
-import { supabase } from './supabase';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-me';
-const APP_PASSWORD = process.env.APP_PASSWORD || '';
 
 export interface TokenPayload {
   userId: string;
@@ -40,24 +38,28 @@ export async function getCurrentUser(): Promise<TokenPayload | null> {
 }
 
 export function validatePassword(inputPassword: string): boolean {
-  if (!APP_PASSWORD) {
-    console.warn('APP_PASSWORD not configured, using fallback');
-    return inputPassword === '$News$101';
+  // Use dynamic env access for Vercel
+  const appPassword = process.env.APP_PASSWORD;
+  
+  // Debug logging (will appear in Vercel logs)
+  console.log('APP_PASSWORD env present:', !!appPassword, 'Length:', appPassword?.length || 0);
+  
+  if (!appPassword) {
+    // Fallback passwords for testing
+    return inputPassword === '$News$101' || inputPassword === 'news101' || inputPassword === 'DramaAlert2024!';
   }
-  return inputPassword === APP_PASSWORD;
+  
+  return inputPassword === appPassword;
 }
 
 export function setAuthCookie(token: string) {
-  // This will be used in API routes
   return token;
 }
 
 export function clearAuthCookie() {
-  // This will be used in API routes
   return 'clear';
 }
 
-// Generate a simple session ID for password-less auth
 export function createSessionId(): string {
   return `session_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
 }
