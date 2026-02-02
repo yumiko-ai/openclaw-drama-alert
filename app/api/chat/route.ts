@@ -119,6 +119,13 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const limit = parseInt(url.searchParams.get("limit") || "50");
 
+    if (!supabase) {
+      return NextResponse.json(
+        { success: true, messages: [], source: "memory" },
+        { headers: corsHeaders() }
+      );
+    }
+
     const { data, error } = await supabase
       .from("chat_messages")
       .select("id, role, content, created_at")
