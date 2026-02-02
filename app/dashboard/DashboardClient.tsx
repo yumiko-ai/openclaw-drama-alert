@@ -3,10 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  Sparkles,
   Image,
   LogOut,
-  Settings,
   Bell,
   TrendingUp,
   MessageSquare,
@@ -66,28 +64,12 @@ export default function DashboardClient() {
             Welcome to DramaAlert Studio
           </h1>
           <p className="text-white/60">
-            Generate thumbnails and push alerts to your dashboard
+            Push alerts to your dashboard
           </p>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Link
-            href="/generator"
-            className="glass-card p-6 hover:border-[#ff0000]/30 transition-colors group"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-lg bg-[#ff0000]/10 flex items-center justify-center">
-                <Image className="w-6 h-6 text-[#ff0000]" />
-              </div>
-              <Sparkles className="w-5 h-5 text-white/20 group-hover:text-[#ff0000] transition-colors" />
-            </div>
-            <h3 className="font-semibold text-white mb-1">Generator</h3>
-            <p className="text-sm text-white/60">
-              Create thumbnails with custom text
-            </p>
-          </Link>
-
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="glass-card p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
