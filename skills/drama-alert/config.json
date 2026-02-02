@@ -1,0 +1,41 @@
+{
+  "name": "drama-alert",
+  "version": "1.0.0",
+  "description": "Generate thumbnails and push alerts to DramaAlert dashboard",
+  "author": "Yumiko",
+  "capabilities": [
+    "thumbnail_generation",
+    "webhook_push",
+    "preset_management",
+    "history_access"
+  ],
+  "repository": "https://github.com/yumiko-ai/openclaw-drama-alert",
+  "documentation": "SKILL.md",
+  "env": [
+    {
+      "name": "DRAMA_ALERT_URL",
+      "required": true,
+      "description": "Base URL of DramaAlert Studio"
+    },
+    {
+      "name": "DRAMA_ALERT_TOKEN",
+      "required": true,
+      "description": "Agent authentication token for API access"
+    }
+  ],
+  "endpoints": {
+    "generate": "/api/generate",
+    "webhook": "/api/webhooks/agent",
+    "presets": "/api/presets",
+    "history": "/api/generations"
+  },
+  "rate_limits": {
+    "generation": 100,
+    "webhooks": 500,
+    "history": 1000
+  },
+  "author": {
+    "name": "Yumiko",
+    "contact": "@yumiko_ai"
+  }
+}
