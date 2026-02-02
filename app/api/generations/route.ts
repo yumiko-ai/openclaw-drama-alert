@@ -17,6 +17,14 @@ export async function GET(request: NextRequest) {
     }
 
     const supabase = getServerSupabase();
+
+    if (!supabase) {
+      return NextResponse.json(
+        { success: true, generations: [], total: 0, source: "memory" },
+        { headers: corsHeaders() }
+      );
+    }
+
     const url = new URL(request.url);
     const limit = parseInt(url.searchParams.get("limit") || "20");
     const offset = parseInt(url.searchParams.get("offset") || "0");
@@ -62,6 +70,14 @@ export async function POST(request: NextRequest) {
     const { name, action, subtext, image_url, generated_url, config } = body;
 
     const supabase = getServerSupabase();
+
+    if (!supabase) {
+      // Return success without saving to database
+      return NextResponse.json(
+        { success: true, generation: { id: "local-1", name, action, subtext, generated_url, created_at: new Date().toISOString() }, source: "memory" },
+        { status: 201, headers: corsHeaders() }
+      );
+    }
 
     const { data, error } = await supabase
       .from("generations")

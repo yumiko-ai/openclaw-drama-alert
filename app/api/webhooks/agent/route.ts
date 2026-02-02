@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest, corsHeaders, handleOptions } from "@/lib/api";
+import { getServerSupabase } from "@/lib/supabase";
 
 export async function OPTIONS() {
   return handleOptions();
@@ -7,7 +8,6 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate request
     const { user, error: authError } = await authenticateRequest(request);
     if (authError || !user) {
       return NextResponse.json(
@@ -35,12 +35,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Process the webhook
-    // In a full implementation, you would:
-    // 1. Store the alert in Supabase
-    // 2. Push real-time update via Supabase realtime
-    // 3. Send notifications if needed
-
     const alert = {
       id: `alert_${Date.now()}`,
       type,
@@ -50,6 +44,27 @@ export async function POST(request: NextRequest) {
     };
 
     console.log("Agent webhook received:", alert);
+
+    // Save to Supabase if available
+    const supabase = getServerSupabase();
+    if (supabase) {
+      await supabase.from("webhook_logs").insert({
+        agent_id: user.userId,
+        type,
+        payload: data || {},
+        success: true,
+      });
+
+      // Also create an alert
+      await supabase.from("alerts").insert({
+        type,
+        title: data?.title || "New Alert",
+        description: data?.description,
+        image_url: data?.image_url,
+        priority: data?.priority || "medium",
+        user_id: user.userId,
+      });
+    }
 
     return NextResponse.json(
       {
@@ -70,7 +85,6 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Authenticate request
     const { user, error: authError } = await authenticateRequest(request);
     if (authError || !user) {
       return NextResponse.json(
@@ -79,18 +93,32 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Return recent alerts (placeholder - would query Supabase in full implementation)
-    const alerts = [
-      {
-        id: "alert_1",
-        type: "system",
-        data: { title: "System Ready", description: "All services operational" },
-        createdAt: new Date().toISOString(),
-      },
-    ];
+    const supabase = getServerSupabase();
+
+    if (!supabase) {
+      return NextResponse.json(
+        { success: true, alerts: [], source: "memory" },
+        { headers: corsHeaders() }
+      );
+    }
+
+    const { data, error } = await supabase
+      .from("alerts")
+      .select("id, type, title, description, image_url, priority, is_read, created_at")
+      .eq("user_id", user.userId)
+      .eq("is_read", false)
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    if (error) {
+      return NextResponse.json(
+        { success: false, error: error.message },
+        { status: 500, headers: corsHeaders() }
+      );
+    }
 
     return NextResponse.json(
-      { success: true, alerts },
+      { success: true, alerts: data },
       { headers: corsHeaders() }
     );
   } catch (error) {

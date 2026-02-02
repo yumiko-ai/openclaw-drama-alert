@@ -72,19 +72,21 @@ export async function POST(request: NextRequest) {
     // Save to chat history (Supabase)
     const supabase = getServerSupabase();
 
-    // Save user message
-    await supabase.from("chat_messages").insert({
-      user_id: user.userId,
-      role: "user",
-      content: message,
-    });
+    if (supabase) {
+      // Save user message
+      await supabase.from("chat_messages").insert({
+        user_id: user.userId,
+        role: "user",
+        content: message,
+      });
 
-    // Save AI response
-    await supabase.from("chat_messages").insert({
-      user_id: user.userId,
-      role: "assistant",
-      content: aiResponse,
-    });
+      // Save AI response
+      await supabase.from("chat_messages").insert({
+        user_id: user.userId,
+        role: "assistant",
+        content: aiResponse,
+      });
+    }
 
     return NextResponse.json(
       {

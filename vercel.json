@@ -10,9 +10,6 @@
       "maxDuration": 60
     }
   },
-  "env": {
-    "@types/uuid": "latest"
-  },
   "headers": [
     {
       "source": "/api/(.*)",

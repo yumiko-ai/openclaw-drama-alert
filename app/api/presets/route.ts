@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest, corsHeaders, handleOptions } from "@/lib/api";
 import { getServerSupabase } from "@/lib/supabase";
 
+// Default presets when Supabase is not configured
+const DEFAULT_PRESETS = [
+  { id: "default-1", name: "Standard", config: { nameSize: 55, actionSize: 110, subtextSize: 22, padding: 55 }, is_default: true },
+  { id: "default-2", name: "Compact", config: { nameSize: 40, actionSize: 80, subtextSize: 18, padding: 40 }, is_default: false },
+  { id: "default-3", name: "Large", config: { nameSize: 70, actionSize: 130, subtextSize: 26, padding: 70 }, is_default: false },
+  { id: "default-4", name: "Drama King", config: { nameSize: 60, actionSize: 140, subtextSize: 24, padding: 65 }, is_default: false },
+];
+
 export async function OPTIONS() {
   return handleOptions();
 }
@@ -22,6 +30,14 @@ export async function GET(request: NextRequest) {
     }
 
     const supabase = getServerSupabase();
+
+    // If Supabase is not configured, return default presets
+    if (!supabase) {
+      return NextResponse.json(
+        { success: true, presets: DEFAULT_PRESETS, source: "defaults" },
+        { headers: corsHeaders() }
+      );
+    }
 
     let query = supabase
       .from("presets")
@@ -88,6 +104,13 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = getServerSupabase();
+
+    if (!supabase) {
+      return NextResponse.json(
+        { success: false, error: "Database not configured" },
+        { status: 503, headers: corsHeaders() }
+      );
+    }
 
     const { data, error } = await supabase
       .from("presets")
